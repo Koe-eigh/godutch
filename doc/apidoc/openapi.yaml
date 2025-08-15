@@ -143,46 +143,6 @@ paths:
                 items:
                   $ref: '#/components/schemas/Settlement'
 
-  /groups/{groupId}/recalculate:
-    post:
-      summary: 清算結果の再計算
-      parameters:
-        - $ref: '#/components/parameters/GroupId'
-      responses:
-        '200':
-          description: 再計算結果
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Settlement'
-
-  /groups/{groupId}/settlement/{payerId}/{receiverId}:
-    put:
-      summary: 支払いステータス更新
-      parameters:
-        - $ref: '#/components/parameters/GroupId'
-        - $ref: '#/components/parameters/PayerId'
-        - $ref: '#/components/parameters/ReceiverId'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [isPaid]
-              properties:
-                isPaid:
-                  type: boolean
-      responses:
-        '200':
-          description: 更新された清算情報
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Settlement'
-
 components:
   parameters:
     GroupId:
@@ -194,20 +154,6 @@ components:
         format: uuid
     EventId:
       name: eventId
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-    PayerId:
-      name: payerId
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-    ReceiverId:
-      name: receiverId
       in: path
       required: true
       schema:
@@ -246,9 +192,6 @@ components:
         groupId:
           type: string
           format: uuid
-        date:
-          type: string
-          format: date
         title:
           type: string
         memo:
@@ -264,14 +207,10 @@ components:
     PaymentEventInput:
       type: object
       required:
-        - date
         - title
         - creditors
         - debtors
       properties:
-        date:
-          type: string
-          format: date
         title:
           type: string
         memo:
@@ -292,8 +231,7 @@ components:
           type: string
           format: uuid
         amount:
-          type: number
-          format: float
+          type: string
     Debtor:
       type: object
       required: [memberId, amount]
@@ -302,19 +240,15 @@ components:
           type: string
           format: uuid
         amount:
-          type: number
-          format: float
+          type: string
     Settlement:
       type: object
       properties:
         payerId:
           type: string
           format: uuid
-        receiverId:
+        payeeId:
           type: string
           format: uuid
         amount:
-          type: number
-          format: float
-        isPaid:
-          type: boolean
+          type: string
