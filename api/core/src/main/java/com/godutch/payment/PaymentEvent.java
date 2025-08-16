@@ -42,8 +42,9 @@ public class PaymentEvent {
         this.groupId = groupId;
         this.title = title;
         this.memo = memo;
-        this.credits = credits != null ? new ArrayList<>(credits) : new ArrayList<>();
-        this.debits = debits != null ? new ArrayList<>(debits) : new ArrayList<>();
+        validate(credits, debits);
+        this.credits = new ArrayList<>(credits);
+        this.debits = new ArrayList<>(debits);
     }
 
     public PaymentEvent(GroupId groupId, String title, String memo, List<Credit> credits, List<Debit> debits) {
@@ -51,8 +52,9 @@ public class PaymentEvent {
         this.groupId = groupId;
         this.title = title;
         this.memo = memo;
-        this.credits = credits != null ? new ArrayList<>(credits) : new ArrayList<>();
-        this.debits = debits != null ? new ArrayList<>(debits) : new ArrayList<>();
+        validate(credits, debits);
+        this.credits = new ArrayList<>(credits);
+        this.debits = new ArrayList<>(debits);
     }
 
     public List<Settlement> calcSettlement() {
@@ -196,5 +198,22 @@ public class PaymentEvent {
             total = total.add(credit.getAmount());
         }
         return total;
+    }
+
+    private void validate(List<Credit> credits, List<Debit> debits) {
+        if (credits == null || debits == null) {
+            throw new IllegalArgumentException("Credits and Debits cannot be null");
+        }
+
+        // 立替金額の合計と負担金額の合計が一致することを確認
+        Amount totalCredit = credits.stream()
+                .map(Credit::getAmount)
+                .reduce(Amount.ZERO, Amount::add);
+        Amount totalDebit = debits.stream()
+                .map(Debit::getAmount)
+                .reduce(Amount.ZERO, Amount::add);
+        if (!totalCredit.equals(totalDebit)) {
+            throw new IllegalArgumentException("Total credit amount must equal total debit amount");
+        }
     }
 }
