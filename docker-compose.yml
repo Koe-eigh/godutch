@@ -44,8 +44,10 @@ services:
     depends_on:
       - api
     volumes:
+      # Nginx conf mounts
       - ./nginx:/etc/nginx/conf.d:ro
-      - ./frontend/build:/usr/share/nginx/html:ro
+      # Vite build output (web/build)
+      - ./web/build:/usr/share/nginx/html:ro
     ports:
       - "3000:80"
 

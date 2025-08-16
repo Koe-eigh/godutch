@@ -1,0 +1,367 @@
+/* Mobile-first, Apple-like clean styling for pages */
+:root {
+  --text: #1d1d1f;
+  --text-subtle: #6e6e73;
+  --border: rgba(0, 0, 0, 0.06);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --bg-card: #ffffff;
+  --danger: #ff3b30; /* iOS system red */
+}
+
+.pageSection {
+  margin: 16px auto 0;
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
+  max-width: 960px;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+
+.title {
+  margin: 0 0 6px;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.memo {
+  margin: 0 0 12px;
+  color: var(--text-subtle);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.blockTitle {
+  margin: 8px 0;
+  color: var(--text-subtle);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--border);
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.name {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.amount {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+.actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.dangerButton {
+  -webkit-tap-highlight-color: transparent;
+  background: #fff;
+  color: var(--danger);
+  border: 1px solid rgba(255, 59, 48, 0.4);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+}
+
+.dangerButton:hover {
+  background: rgba(255, 59, 48, 0.06);
+  border-color: rgba(255, 59, 48, 0.6);
+}
+
+.dangerButton:active {
+  background: rgba(255, 59, 48, 0.12);
+  transform: scale(0.98);
+}
+
+.dangerButton:focus-visible {
+  outline: 2px solid rgba(0, 125, 250, 0.6);
+  outline-offset: 2px;
+}
+
+/* Generic page section (alias for pageSection usage in other pages) */
+.section {
+  margin: 16px auto 0;
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
+  max-width: 960px;
+}
+
+.h2 {
+  margin: 0 0 12px;
+  color: var(--text);
+  font-weight: 800;
+  font-size: 24px;
+  letter-spacing: -0.02em;
+}
+
+.h3 {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+}
+
+.desc {
+  margin: 0 0 16px;
+  color: var(--text-subtle);
+  line-height: 1.6;
+}
+
+.form {
+  display: grid;
+  gap: 12px;
+  max-width: 720px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.label {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.input,
+.textarea,
+select {
+  appearance: none;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: #fff;
+  color: var(--text);
+  box-shadow: var(--shadow) inset;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: #a0a0a5;
+}
+
+.textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.fieldset {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 10px 12px 12px;
+}
+
+.legend {
+  color: var(--text-subtle);
+  font-size: 12px;
+  padding: 0 6px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nameLabel {
+  width: 40%;
+  min-width: 120px;
+  color: var(--text);
+}
+
+.rowBetween {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.link {
+  color: #06c;
+  text-decoration: none;
+}
+.link:hover { text-decoration: underline; }
+
+.tabs {
+  margin: 12px 0 8px;
+  display: flex;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tab {
+  padding: 8px 2px;
+  color: var(--text-subtle);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+}
+
+.tab:hover { color: var(--text); }
+
+/* Active state hint (when router adds aria-current) */
+.tab[aria-current="page"] {
+  color: var(--text);
+  border-color: #06c;
+}
+
+.error {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.primaryBtn {
+  -webkit-tap-highlight-color: transparent;
+  background: #0071e3;
+  color: #fff;
+  border: 1px solid #0071e3;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.05s ease;
+}
+.primaryBtn:hover { background: #0a84ff; }
+.primaryBtn:active { transform: scale(0.98); }
+.primaryBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.secondaryBtn {
+  -webkit-tap-highlight-color: transparent;
+  background: #fff;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ghostBtn {
+  -webkit-tap-highlight-color: transparent;
+  background: transparent;
+  color: #06c;
+  border: 1px dashed rgba(0,0,0,0.2);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.hr {
+  margin: 20px 0;
+  border: none;
+  border-top: 1px solid var(--border);
+}
+
+.help {
+  color: var(--text-subtle);
+  font-size: 12px;
+}
+
+@media (min-width: 768px) {
+  .pageSection {
+    margin-top: 24px;
+  }
+  .card {
+    padding: 20px 24px;
+  }
+  .title {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+  .memo {
+    font-size: 15px;
+  }
+  .infoGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .section { margin-top: 24px; }
+  .h2 { font-size: 28px; }
+  .h3 { font-size: 20px; }
+  .nameLabel { width: 200px; }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #ffffff;
+    --text-subtle: #9a9aa2;
+    --border: rgba(255, 255, 255, 0.08);
+    --bg-card: #1c1c1e;
+    --shadow: none;
+  }
+  .dangerButton {
+    background: transparent;
+    border-color: rgba(255, 69, 58, 0.5);
+    color: #ff6961;
+  }
+  .dangerButton:hover {
+    background: rgba(255, 69, 58, 0.08);
+  }
+  .dangerButton:active {
+    background: rgba(255, 69, 58, 0.16);
+  }
+  .input, .textarea, select { background: #1c1c1e; color: var(--text); }
+  .link { color: #5eb1ff; }
+  /* Fix low contrast on secondary and ghost buttons in dark mode */
+  .secondaryBtn {
+    background: transparent;
+    color: var(--text);
+    border-color: rgba(255,255,255,0.22);
+  }
+  .ghostBtn {
+    border-color: rgba(255,255,255,0.3);
+    color: #5eb1ff;
+  }
+  .tab[aria-current="page"] { border-color: #5eb1ff; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dangerButton {
+    transition: none;
+  }
+}
