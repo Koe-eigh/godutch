@@ -60,7 +60,7 @@ export default function NewEventPage() {
       .filter((d) => d.amount)
 
     if (creditorsArr.length === 0 || debtorsArr.length === 0) {
-      setError('少なくとも1人の立替者と1人の負担者を入力してください')
+      setError('少なくとも1人の立替者と1人の負担額を入力してください')
       return
     }
 
@@ -119,7 +119,7 @@ export default function NewEventPage() {
             </fieldset>
 
             <fieldset className={styles.fieldset}>
-              <legend className={styles.legend}>負担者 金額</legend>
+              <legend className={styles.legend}>各負担金額</legend>
               {group.members.map((m, i) => (
                 <div key={`${m.id}-${i}`} className={styles.row}>
                   <label className={styles.nameLabel}>{m.name}</label>

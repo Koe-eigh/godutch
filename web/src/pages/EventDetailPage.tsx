@@ -72,7 +72,7 @@ export default function EventDetailPage() {
             </ul>
           </div>
           <div>
-            <h4 className={pageStyles.blockTitle}>負担者</h4>
+            <h4 className={pageStyles.blockTitle}>負担額</h4>
             <ul className={pageStyles.list}>
               {event.debtors.map((d) => (
                 <li key={d.memberId} className={pageStyles.listItem}>
