@@ -9,6 +9,11 @@ public class Member {
         this.name = name;
     }
 
+    public Member(MemberId id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Member(String name) {
         this.id = MemberId.newId();
         this.name = name;

@@ -13,6 +13,23 @@ public class Group {
         this.id = new GroupId(id);
         this.name = name;
         this.description = description;
+        // 名前が重複している場合、はIllegalArgumentExceptionを投げる
+        if (members.stream().map(Member::getName).distinct().count() != members.size()) {
+            throw new IllegalArgumentException("Member names must be unique");
+        }
+
+        this.members = new ArrayList<>(members);
+    }
+
+    public Group(GroupId id, String name, String description, List<Member> members) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        // 名前が重複している場合、はIllegalArgumentExceptionを投げる
+        if (members.stream().map(Member::getName).distinct().count() != members.size()) {
+            throw new IllegalArgumentException("Member names must be unique");
+        }
+
         this.members = new ArrayList<>(members);
     }
 
