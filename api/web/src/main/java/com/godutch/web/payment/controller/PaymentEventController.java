@@ -8,6 +8,8 @@ import com.godutch.app.payment.api.UpdatePaymentEvent;
 import com.godutch.web.payment.dto.PaymentEventRequest;
 import com.godutch.web.payment.dto.PaymentEventResponse;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +47,7 @@ public class PaymentEventController {
 
     @PostMapping
     public ResponseEntity<PaymentEventResponse> create(@PathVariable String groupId,
-            @RequestBody PaymentEventRequest request) {
+            @Valid @RequestBody PaymentEventRequest request) {
         var input = new AddPaymentEventHttpRequestHandler(groupId, request);
         var output = new AddPaymentEventHttpResponsePresenter();
         addPaymentEvent.execute(input, output);

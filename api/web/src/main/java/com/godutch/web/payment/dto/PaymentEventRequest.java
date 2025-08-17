@@ -1,16 +1,14 @@
 package com.godutch.web.payment.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 
+import com.godutch.web.payment.validator.api.ValidPaymentEventRequest;
+
+@ValidPaymentEventRequest
 public class PaymentEventRequest {
-    @NotBlank
     private String title;
     private String memo;
-    @NotEmpty
     private List<CreditOrDebit> creditors;
-    @NotEmpty
     private List<CreditOrDebit> debtors;
 
     public String getTitle() { return title; }
@@ -23,9 +21,7 @@ public class PaymentEventRequest {
     public void setDebtors(List<CreditOrDebit> debtors) { this.debtors = debtors; }
 
     public static class CreditOrDebit {
-        @NotBlank
         private String memberId;
-        @NotBlank
         private String amount;
         public String getMemberId() { return memberId; }
         public void setMemberId(String memberId) { this.memberId = memberId; }
