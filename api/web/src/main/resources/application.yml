@@ -4,9 +4,9 @@ spring:
   application:
     name: godutch-web
   datasource:
-    url: jdbc:mysql://localhost:3306/godutch?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Tokyo
-    username: godutch
-    password: godutch
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   flyway:
     enabled: true
@@ -31,7 +31,8 @@ spring:
     activate:
       on-profile: docker
   datasource:
-    url: jdbc:mysql://mysql:3306/godutch?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Tokyo
-    username: godutch
-    password: godutch
+    datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver

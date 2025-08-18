@@ -4,10 +4,10 @@ services:
     image: mysql:8.0
     container_name: godutch-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: godutch
-      MYSQL_USER: godutch
-      MYSQL_PASSWORD: godutch
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
       TZ: Asia/Tokyo
     command: ["mysqld", "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
     ports:
@@ -29,12 +29,11 @@ services:
       mysql:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/godutch?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Tokyo
-      SPRING_DATASOURCE_USERNAME: godutch
-      SPRING_DATASOURCE_PASSWORD: godutch
-      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
       TZ: Asia/Tokyo
-      JAVA_OPTS: -XX:InitialRAMPercentage=50.0 -XX:MaxRAMPercentage=80.0
     ports:
       - "8080:8080"
 
