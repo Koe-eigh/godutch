@@ -1,0 +1,37 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: godutch-web
+  datasource:
+    url: jdbc:mysql://localhost:3306/godutch?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Tokyo
+    username: godutch
+    password: godutch
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    table: flyway_schema_history
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+
+---
+# Docker用プロファイル: compose内では mysql ホスト名
+spring:
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    url: jdbc:mysql://mysql:3306/godutch?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Tokyo
+    username: godutch
+    password: godutch
+    driver-class-name: com.mysql.cj.jdbc.Driver

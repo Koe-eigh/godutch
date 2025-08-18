@@ -1,0 +1,55 @@
+version: '3.9'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: godutch-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: godutch
+      MYSQL_USER: godutch
+      MYSQL_PASSWORD: godutch
+      TZ: Asia/Tokyo
+    command: ["mysqld", "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-ppassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: godutch-api
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/godutch?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Tokyo
+      SPRING_DATASOURCE_USERNAME: godutch
+      SPRING_DATASOURCE_PASSWORD: godutch
+      SPRING_PROFILES_ACTIVE: docker
+      TZ: Asia/Tokyo
+      JAVA_OPTS: -XX:InitialRAMPercentage=50.0 -XX:MaxRAMPercentage=80.0
+    ports:
+      - "8080:8080"
+
+  web:
+    image: nginx:alpine
+    container_name: godutch-web
+    depends_on:
+      - api
+    volumes:
+      # Nginx conf mounts
+      - ./nginx:/etc/nginx/conf.d:ro
+      # Vite build output (web/build)
+      - ./web/build:/usr/share/nginx/html:ro
+    ports:
+      - "3000:80"
+
+volumes:
+  mysql-data:
