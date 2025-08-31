@@ -27,7 +27,7 @@ FROM eclipse-temurin:22-jre-alpine AS runtime
 
 ENV TZ=Asia/Tokyo \
     APP_HOME=/app \
-    JAVA_OPTS=""
+    JAVA_OPTS="-Dserver.port=\$PORT"
 
 # Add non-root user
 RUN addgroup -S spring && adduser -S spring -G spring
@@ -40,12 +40,16 @@ RUN mkdir -p logs && chown spring:spring logs
 # Copy fat jar from build stage (web module is the Spring Boot entry point)
 COPY --from=build /workspace/web/target/*.jar app.jar
 
+# エントリポイントスクリプトを配置（DB URL から SPRING_DATASOURCE_* を導出）
+COPY docker-heroku-entrypoint.sh /usr/local/bin/docker-heroku-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-heroku-entrypoint.sh
+
 # Expose port (Spring Boot default 8080)
 EXPOSE 8080
 
-# Healthcheck (basic) - optional; docker-compose already handles MySQL health.
+# Healthcheck (basic) - optional
 HEALTHCHECK --interval=30s --timeout=3s --retries=5 CMD wget -qO- http://localhost:8080/actuator/health | grep '"status":"UP"' || exit 1
 
 USER spring
 
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+ENTRYPOINT ["/usr/local/bin/docker-heroku-entrypoint.sh"]

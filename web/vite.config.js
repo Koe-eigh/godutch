@@ -12,7 +12,7 @@ export default defineConfig({
         open: false,
         proxy: {
             '/api': {
-                target: 'http://localhost:8080',
+                target: process.env.API_URL || 'http://localhost:8080',
                 changeOrigin: true,
                 // Docker の nginx と同様に、/api プレフィックスを削除して転送
                 rewrite: function (path) { return path.replace(/^\/api/, ''); }
