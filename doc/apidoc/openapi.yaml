@@ -1,0 +1,254 @@
+openapi: 3.1.0
+info:
+  title: Go Dutch API (MVP)
+  version: 1.0.0
+  description: 単純な割り勘アプリのMVP版REST API
+
+servers:
+  - url: https://api.example.com
+
+paths:
+  /groups:
+    post:
+      summary: グループ作成
+      description: 名前、説明、メンバーを指定してグループを作成する
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - description
+                - members
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                members:
+                  type: array
+                  items:
+                    type: object
+                    required: [name]
+                    properties:
+                      name:
+                        type: string
+      responses:
+        '201':
+          description: グループ作成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+
+  /groups/{groupId}:
+    get:
+      summary: グループ取得
+      parameters:
+        - $ref: '#/components/parameters/GroupId'
+      responses:
+        '200':
+          description: グループ情報
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+
+  /groups/{groupId}/events:
+    get:
+      summary: グループの支払いイベント一覧取得
+      parameters:
+        - $ref: '#/components/parameters/GroupId'
+      responses:
+        '200':
+          description: イベント一覧
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PaymentEvent'
+    post:
+      summary: 支払いイベント追加
+      parameters:
+        - $ref: '#/components/parameters/GroupId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentEventInput'
+      responses:
+        '201':
+          description: イベント作成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentEvent'
+
+  /groups/{groupId}/events/{eventId}:
+    get:
+      summary: 支払いイベント詳細取得
+      parameters:
+        - $ref: '#/components/parameters/GroupId'
+        - $ref: '#/components/parameters/EventId'
+      responses:
+        '200':
+          description: イベント詳細
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentEvent'
+    put:
+      summary: 支払いイベント更新
+      parameters:
+        - $ref: '#/components/parameters/GroupId'
+        - $ref: '#/components/parameters/EventId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentEventInput'
+      responses:
+        '200':
+          description: 更新されたイベント
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentEvent'
+    delete:
+      summary: 支払いイベント削除
+      parameters:
+        - $ref: '#/components/parameters/GroupId'
+        - $ref: '#/components/parameters/EventId'
+      responses:
+        '204':
+          description: 削除成功
+
+  /groups/{groupId}/settlement:
+    get:
+      summary: 清算結果取得
+      parameters:
+        - $ref: '#/components/parameters/GroupId'
+      responses:
+        '200':
+          description: 清算結果一覧
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Settlement'
+
+components:
+  parameters:
+    GroupId:
+      name: groupId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    EventId:
+      name: eventId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  schemas:
+    Group:
+      type: object
+      properties:
+        groupId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/Member'
+    Member:
+      type: object
+      properties:
+        memberId:
+          type: string
+          format: uuid
+        name:
+          type: string
+    PaymentEvent:
+      type: object
+      properties:
+        eventId:
+          type: string
+          format: uuid
+        groupId:
+          type: string
+          format: uuid
+        title:
+          type: string
+        memo:
+          type: string
+        creditors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Creditor'
+        debtors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Debtor'
+    PaymentEventInput:
+      type: object
+      required:
+        - title
+        - creditors
+        - debtors
+      properties:
+        title:
+          type: string
+        memo:
+          type: string
+        creditors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Creditor'
+        debtors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Debtor'
+    Creditor:
+      type: object
+      required: [memberId, amount]
+      properties:
+        memberId:
+          type: string
+          format: uuid
+        amount:
+          type: string
+    Debtor:
+      type: object
+      required: [memberId, amount]
+      properties:
+        memberId:
+          type: string
+          format: uuid
+        amount:
+          type: string
+    Settlement:
+      type: object
+      properties:
+        payerId:
+          type: string
+          format: uuid
+        payeeId:
+          type: string
+          format: uuid
+        amount:
+          type: string
