@@ -29,7 +29,10 @@ fi
 # Default active profile
 export SPRING_PROFILES_ACTIVE="${SPRING_PROFILES_ACTIVE:-prod}"
 
-# Ensure PORT is used by Spring Boot
+# Ensure PORT is used by Spring Boot.
 JAVA_OPTS="${JAVA_OPTS:-} -Dserver.port=${PORT:-8080}"
 
-exec sh -lc "java ${JAVA_OPTS} -jar app.jar"
+# Avoid spawning a login shell here. In the runtime image that can reset PATH and
+# break `java` resolution even though the JRE is installed.
+# shellcheck disable=SC2086
+exec java ${JAVA_OPTS} -jar app.jar

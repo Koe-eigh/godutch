@@ -26,6 +26,13 @@ Go Dutchは、グループでの支払いを簡単に管理するためのアプ
    docker-compose logs -f
    ```
 
+   以前の設定で `MYSQL_USER=root` による MySQL 初期化エラーが出た場合は、`.env` を最新化してから必要に応じてデータボリュームを作り直してください。
+   ```bash
+   cp .env.example .env
+   docker-compose down -v
+   docker-compose up -d
+   ```
+
 3. **フロントエンドの開発サーバー起動** (オプション)
    ```bash
    cd web
