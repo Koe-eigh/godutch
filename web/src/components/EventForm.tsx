@@ -6,7 +6,7 @@ import styles from '../styles/Page.module.css'
 type EventFormProps = {
   cancelTo: string
   error: string
-  group?: Group
+  group: Group | null
   groupError?: string
   initialValue?: PaymentEventInput
   submitting: boolean
