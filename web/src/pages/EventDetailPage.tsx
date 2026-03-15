@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { api } from '../api'
 import type { PaymentEvent } from '../api'
 import { useGroup } from '../hooks/useGroup'
@@ -87,6 +87,13 @@ export default function EventDetailPage() {
         </div>
 
         <div className={pageStyles.actions}>
+          <Link
+            to={`/groups/${groupId}/events/${eventId}/edit`}
+            className={pageStyles.secondaryBtn}
+            role="button"
+          >
+            更新
+          </Link>
           <button className={pageStyles.dangerButton} onClick={onDelete}>
             削除
           </button>

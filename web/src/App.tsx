@@ -5,6 +5,7 @@ import GroupPage from './pages/GroupPage'
 import EventsListPage from './pages/EventsListPage'
 import NewEventPage from './pages/NewEventPage'
 import EventDetailPage from './pages/EventDetailPage'
+import EditEventPage from './pages/EditEventPage'
 import SettlementPage from './pages/SettlementPage'
 
 export default function App() {
@@ -17,6 +18,7 @@ export default function App() {
             <Route path="events" element={<EventsListPage />} />
             <Route path="events/new" element={<NewEventPage />} />
             <Route path="events/:eventId" element={<EventDetailPage />} />
+            <Route path="events/:eventId/edit" element={<EditEventPage />} />
             <Route path="settlement" element={<SettlementPage />} />
           </Route>
           <Route path="*" element={<p>ページが見つかりません</p>} />
