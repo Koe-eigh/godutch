@@ -41,7 +41,7 @@ RUN mkdir -p logs && chown spring:spring logs
 COPY --from=build /workspace/web/target/*.jar app.jar
 
 # エントリポイントスクリプトを配置（DB URL から SPRING_DATASOURCE_* を導出）
-COPY docker-heroku-entrypoint.sh /usr/local/bin/dockerfile-entrypoint.sh
+COPY dockerfile-entrypoint.sh /usr/local/bin/dockerfile-entrypoint.sh
 RUN chmod +x /usr/local/bin/dockerfile-entrypoint.sh
 
 # Expose port (Spring Boot default 8080)
