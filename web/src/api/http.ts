@@ -1,6 +1,8 @@
+/* eslint-env browser */
+
 import type { ApiError } from './types'
 
-const API_BASE = '/api'
+const API_BASE = import.meta.env.VITE_API_BASE || '/api'
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
@@ -29,7 +31,7 @@ async function request<T>(path: string, method: HttpMethod, opts: RequestOptions
     ...opts.headers,
   }
 
-  const init: RequestInit = {
+  const init = {
     method,
     headers,
     signal: opts.signal,
