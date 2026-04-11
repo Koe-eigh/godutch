@@ -13,6 +13,10 @@ if [ -n "${DB_URL}" ]; then
   user="${creds%%:*}"
   pass="${creds#*:}"
   host_port_path="${host_and_path%%\?*}"      # host:port/dbname
+  raw_query=""
+  if [ "${host_and_path#*\?}" != "${host_and_path}" ]; then
+    raw_query="${host_and_path#*\?}"
+  fi
   host_port="${host_port_path%%/*}"           # host:port
   dbname="${host_port_path#*/}"               # dbname
   host="${host_port%%:*}"
@@ -21,8 +25,19 @@ if [ -n "${DB_URL}" ]; then
   if [ "${port}" = "${host}" ]; then
     port=3306
   fi
-  # Build JDBC URL
-  export SPRING_DATASOURCE_URL="jdbc:mysql://${host}:${port}/${dbname}?useSSL=false&allowPublicKeyRetrieval=true&zeroDateTimeBehavior=CONVERT_TO_NULL&characterEncoding=UTF-8&useUnicode=true&serverTimezone=UTC"
+
+  tls_query="sslMode=${DB_SSL_MODE:-VERIFY_IDENTITY}&enabledTLSProtocols=${DB_TLS_PROTOCOLS:-TLSv1.2,TLSv1.3}"
+  default_query="${tls_query}&zeroDateTimeBehavior=CONVERT_TO_NULL&characterEncoding=UTF-8&useUnicode=true&serverTimezone=UTC"
+
+  if [ -n "${raw_query}" ]; then
+    jdbc_query="${raw_query}&${default_query}"
+  else
+    jdbc_query="${default_query}"
+  fi
+
+  # Build JDBC URL. Managed MySQL-compatible providers such as TiDB Cloud
+  # require TLS, so do not force insecure transport here.
+  export SPRING_DATASOURCE_URL="jdbc:mysql://${host}:${port}/${dbname}?${jdbc_query}"
   export SPRING_DATASOURCE_USERNAME="${user}"
   export SPRING_DATASOURCE_PASSWORD="${pass}"
 fi
