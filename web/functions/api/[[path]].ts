@@ -32,7 +32,12 @@ export const onRequest: PagesFunction<Env> = async ({ request, env, params }) =>
     headers.delete(header)
   }
 
-  const init = {
+  const init: {
+    method: string
+    headers: Headers
+    redirect: 'manual'
+    body?: ReadableStream<Uint8Array> | null
+  } = {
     method: request.method,
     headers,
     redirect: 'manual',

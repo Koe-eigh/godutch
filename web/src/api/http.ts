@@ -31,7 +31,12 @@ async function request<T>(path: string, method: HttpMethod, opts: RequestOptions
     ...opts.headers,
   }
 
-  const init = {
+  const init: {
+    method: HttpMethod
+    headers: Record<string, string>
+    signal?: AbortSignal
+    body?: string
+  } = {
     method,
     headers,
     signal: opts.signal,
