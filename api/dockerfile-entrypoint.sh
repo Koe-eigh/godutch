@@ -1,9 +1,10 @@
 #!/usr/bin/env sh
 set -eu
 
-# If JAWSDB_URL or CLEARDB_DATABASE_URL is provided, derive Spring datasource envs.
+# If a generic database URL is provided, derive Spring datasource envs.
 # Expected format: mysql://user:pass@host:port/dbname?reconnect=true
-DB_URL="${JAWSDB_URL:-${CLEARDB_DATABASE_URL:-}}"
+# Legacy provider-specific variables are kept as fallbacks for compatibility.
+DB_URL="${DATABASE_URL:-${DB_URL:-${JAWSDB_URL:-${CLEARDB_DATABASE_URL:-}}}}"
 
 if [ -n "${DB_URL}" ]; then
   proto_removed="${DB_URL#*://}"              # user:pass@host:port/dbname?...
