@@ -10,14 +10,25 @@ export function useGroup(groupId?: string, refreshKey?: string) {
   useEffect(() => {
     if (!groupId) return
     const ctrl = new AbortController()
+    let active = true
     setLoading(true)
     setError('')
     api
-      .getGroup(groupId)
-      .then(setGroup)
-      .catch((e) => setError(e?.message || '読み込みに失敗しました'))
-      .finally(() => setLoading(false))
-    return () => ctrl.abort()
+      .getGroup(groupId, ctrl.signal)
+      .then((nextGroup) => {
+        if (active) setGroup(nextGroup)
+      })
+      .catch((e) => {
+        if (!active || (e instanceof Error && e.name === 'AbortError')) return
+        setError(e?.message || '読み込みに失敗しました')
+      })
+      .finally(() => {
+        if (active) setLoading(false)
+      })
+    return () => {
+      active = false
+      ctrl.abort()
+    }
   }, [groupId, refreshKey])
 
   return { group, loading, error }

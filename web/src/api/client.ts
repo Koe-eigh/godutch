@@ -14,8 +14,8 @@ export class ApiClient {
   createGroup(body: GroupInput): Promise<Group> {
     return _createGroup(body)
   }
-  getGroup(groupId: string): Promise<Group> {
-    return _getGroup(groupId)
+  getGroup(groupId: string, signal?: AbortSignal): Promise<Group> {
+    return _getGroup(groupId, signal)
   }
   listEvents(groupId: string): Promise<PaymentEvent[]> {
     return _listEvents(groupId)
