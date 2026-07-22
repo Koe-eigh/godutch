@@ -1,11 +1,21 @@
-import { Link, Outlet, useParams, generatePath } from 'react-router-dom'
+import { generatePath, Link, Outlet, useLocation, useParams } from 'react-router-dom'
 import { useState, useRef } from 'react'
 import { useGroup } from '../hooks/useGroup'
 import styles from '../styles/Page.module.css'
 
+function formatAmount(value?: string) {
+  if (!value) return '0'
+  try {
+    return BigInt(value).toLocaleString('ja-JP')
+  } catch {
+    return value
+  }
+}
+
 export default function GroupPage() {
   const { groupId = '' } = useParams()
-  const { group, loading, error } = useGroup(groupId)
+  const location = useLocation()
+  const { group, loading, error } = useGroup(groupId, location.key)
   const [copied, setCopied] = useState(false)
   const [manualCopy, setManualCopy] = useState(false)
   const manualCopyRef = useRef<HTMLInputElement | null>(null)
@@ -30,7 +40,7 @@ export default function GroupPage() {
     }
   }
 
-  if (loading) return <p>読み込み中...</p>
+  if (loading && !group) return <p>読み込み中...</p>
   if (error)
     return (
       <div>
@@ -49,6 +59,10 @@ export default function GroupPage() {
       <div className={styles.card}>
         <h2 className={styles.h2}>{group.name}</h2>
         {group.description && <p className={styles.desc}>{group.description}</p>}
+        <div className={styles.totalPaid}>
+          <span className={styles.totalPaidLabel}>グループ全体の支払総額</span>
+          <span className={styles.totalPaidAmount}>{formatAmount(group.totalPaidAmount)}円</span>
+        </div>
         <div
           className={styles.desc}
           style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}

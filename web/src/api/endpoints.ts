@@ -12,8 +12,8 @@ export async function createGroup(body: GroupInput): Promise<Group> {
   return http.post<Group>('/groups', body)
 }
 
-export async function getGroup(groupId: string): Promise<Group> {
-  return http.get<Group>(`/groups/${encodeURIComponent(groupId)}`)
+export async function getGroup(groupId: string, signal?: AbortSignal): Promise<Group> {
+  return http.get<Group>(`/groups/${encodeURIComponent(groupId)}`, { signal })
 }
 
 // /groups/{groupId}/events

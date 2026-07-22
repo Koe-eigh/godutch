@@ -14,6 +14,7 @@ export interface Group {
   name: string
   description?: string
   members: Member[]
+  totalPaidAmount: string
 }
 
 export interface Creditor {

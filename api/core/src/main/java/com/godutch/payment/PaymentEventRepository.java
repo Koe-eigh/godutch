@@ -1,5 +1,6 @@
 package com.godutch.payment;
 
+import com.godutch.common.Amount;
 import com.godutch.group.GroupId;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +34,11 @@ public interface PaymentEventRepository {
     List<PaymentEvent> findAll();
 
     Optional<List<PaymentEvent>> findAllBy(GroupId groupId);
+
+    /**
+     * グループ内の支払いイベントで立て替えられた金額の合計を取得します。
+     */
+    Amount findTotalPaidAmountBy(GroupId groupId);
     
     /**
      * 支払いイベントを削除します（PaymentEventId版）

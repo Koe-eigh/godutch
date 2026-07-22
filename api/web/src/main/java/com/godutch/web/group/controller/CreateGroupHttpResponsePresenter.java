@@ -23,7 +23,8 @@ public class CreateGroupHttpResponsePresenter implements CreateGroupOutputPort {
             group.getDescription(),
             group.getMembers().stream()
                 .map(member -> new GroupResponse.MemberResponse(member.getId(), member.getName()))
-                .toList()
+                .toList(),
+            "0"
         ));
     }
 }

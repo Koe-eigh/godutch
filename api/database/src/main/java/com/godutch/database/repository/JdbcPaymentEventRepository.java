@@ -203,6 +203,29 @@ public class JdbcPaymentEventRepository implements PaymentEventRepository {
     }
 
     @Override
+    public Amount findTotalPaidAmountBy(GroupId groupId) {
+        String sql = """
+            SELECT COALESCE(SUM(creditor.amount), 0) AS total_paid_amount
+            FROM tbl_payment_events payment_event
+            INNER JOIN tbl_payment_event_creditors creditor
+                ON creditor.event_id = payment_event.id
+            WHERE payment_event.group_id = ?
+            """;
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, groupId.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next()
+                    ? new Amount(rs.getLong("total_paid_amount"))
+                    : Amount.ZERO;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to calculate total paid amount", e);
+        }
+    }
+
+    @Override
     public List<PaymentEvent> findAll() {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement("SELECT id FROM tbl_payment_events")) {

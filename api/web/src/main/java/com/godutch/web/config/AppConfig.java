@@ -46,8 +46,10 @@ public class AppConfig {
     }
 
     @Bean
-    public GetGroupById getGroupById(GroupRepository groupRepository) {
-        return new GetGroupByIdImpl(groupRepository);
+    public GetGroupById getGroupById(
+            GroupRepository groupRepository,
+            PaymentEventRepository paymentEventRepository) {
+        return new GetGroupByIdImpl(groupRepository, paymentEventRepository);
     }
 
     @Bean
