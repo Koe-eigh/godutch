@@ -144,6 +144,31 @@
   line-height: 1.6;
 }
 
+.totalPaid {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 16px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(0, 113, 227, 0.08);
+}
+
+.totalPaidLabel {
+  color: var(--text-subtle);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.totalPaidAmount {
+  color: var(--text);
+  font-size: 24px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
 .form {
   display: grid;
   gap: 12px;
