@@ -116,6 +116,8 @@
 
 /* Generic page section (alias for pageSection usage in other pages) */
 .section {
+  width: 100%;
+  min-width: 0;
   margin: 16px auto 0;
   padding-left: max(16px, env(safe-area-inset-left));
   padding-right: max(16px, env(safe-area-inset-right));
@@ -190,6 +192,8 @@
 .textarea,
 select {
   appearance: none;
+  font: inherit;
+  font-size: 16px;
   width: 100%;
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -245,16 +249,24 @@ select {
 }
 .link:hover { text-decoration: underline; }
 
+.groupNavContainer {
+  margin: 0 auto;
+  padding: 0 max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left));
+  max-width: 960px;
+  overflow-x: auto;
+}
+
 .tabs {
-  margin: 12px 0 8px;
   display: flex;
-  gap: 12px;
+  gap: 20px;
   border-bottom: 1px solid var(--border);
+  min-width: max-content;
 }
 
 .tab {
-  padding: 8px 2px;
+  padding: 10px 2px;
   color: var(--text-subtle);
+  font-weight: 600;
   text-decoration: none;
   border-bottom: 2px solid transparent;
 }
@@ -265,6 +277,21 @@ select {
 .tab[aria-current="page"] {
   color: var(--text);
   border-color: #06c;
+}
+
+.shareRow {
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  color: var(--text-subtle);
+}
+
+.shareUrl {
+  flex: 1 1 320px;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .error {
