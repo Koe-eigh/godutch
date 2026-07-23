@@ -22,21 +22,29 @@
 }
 
 @layer components {
-  .container { min-height: 100%; display: grid; grid-template-rows: auto 1fr auto; }
+  .container { width: 100%; min-width: 0; min-height: 100%; display: grid; grid-template-rows: auto 1fr auto; overflow-x: hidden; }
   .header {
     position: sticky; top: 0; z-index: 10;
     background: var(--bg); border-bottom: 1px solid var(--border);
     box-shadow: var(--shadow);
   }
-  .brand { max-width: var(--max-w); margin: 0 auto; padding: 10px var(--pad); font-weight: 700; letter-spacing: .2px; }
-  .nav { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--pad) var(--pad); display: flex; gap: 12px; }
-  .navLink { color: #06c; }
-  .main { max-width: var(--max-w); margin: 0 auto; padding: var(--pad-lg) var(--pad); }
+  .headerContent { width: 100%; max-width: var(--max-w); margin: 0 auto; padding: 10px var(--pad); display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { font-weight: 700; letter-spacing: .2px; }
+  .menu { position: relative; }
+  .menuButton { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 10px; cursor: pointer; list-style: none; -webkit-tap-highlight-color: transparent; }
+  .menuButton::-webkit-details-marker { display: none; }
+  .menuButton:hover { background: var(--bg-soft); }
+  .menuButton:focus-visible { outline: 2px solid #0071e3; outline-offset: 2px; }
+  .menuIcon { width: 22px; display: grid; gap: 4px; }
+  .menuIcon span { display: block; width: 100%; height: 2px; border-radius: 999px; background: #1d1d1f; }
+  .menuPanel { position: absolute; top: calc(100% + 8px); right: 0; min-width: 200px; padding: 8px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); box-shadow: var(--shadow); }
+  .menuLink { display: block; padding: 10px 12px; border-radius: 8px; color: #06c; white-space: nowrap; }
+  .menuLink:hover, .menuLink:focus-visible { background: var(--bg-soft); }
+  .main { width: 100%; min-width: 0; max-width: var(--max-w); margin: 0 auto; padding: var(--pad-lg) var(--pad); }
   .footer { max-width: var(--max-w); margin: 0 auto; padding: 32px var(--pad); color: var(--muted); border-top: 1px solid var(--border); }
 
   @media (min-width: 768px) {
-    .brand { padding: 14px var(--pad); }
-    .nav { padding-bottom: var(--pad-lg); }
+    .headerContent { padding-top: 14px; padding-bottom: 14px; }
   }
 }
 
@@ -50,5 +58,6 @@
     --shadow: none;
   }
   body { color: #ffffff; background: #000000; }
-  .navLink { color: #5eb1ff; }
+  .menuIcon span { background: #fff; }
+  .menuLink { color: #5eb1ff; }
 }
