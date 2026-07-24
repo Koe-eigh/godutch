@@ -1,4 +1,11 @@
-import type { Group, GroupInput, PaymentEvent, PaymentEventInput, Settlement } from './types'
+import type {
+  Group,
+  GroupInput,
+  PaymentEvent,
+  PaymentEventInput,
+  PaymentEventsPage,
+  Settlement,
+} from './types'
 import {
   createGroup as _createGroup,
   getGroup as _getGroup,
@@ -17,8 +24,13 @@ export class ApiClient {
   getGroup(groupId: string, signal?: AbortSignal): Promise<Group> {
     return _getGroup(groupId, signal)
   }
-  listEvents(groupId: string): Promise<PaymentEvent[]> {
-    return _listEvents(groupId)
+  listEvents(
+    groupId: string,
+    page = 1,
+    perPage = 10,
+    signal?: AbortSignal
+  ): Promise<PaymentEventsPage> {
+    return _listEvents(groupId, page, perPage, signal)
   }
   addEvent(groupId: string, body: PaymentEventInput): Promise<PaymentEvent> {
     return _addEvent(groupId, body)

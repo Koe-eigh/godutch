@@ -10,7 +10,7 @@ export interface GroupOutletContext {
 export default function GroupPage() {
   const { groupId = '' } = useParams()
   const location = useLocation()
-  const { group, loading, error } = useGroup(groupId, location.key)
+  const { group, loading, error } = useGroup(groupId, location.pathname)
 
   if (loading && !group) return <p>読み込み中...</p>
   if (error)

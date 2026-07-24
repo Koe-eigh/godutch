@@ -36,6 +36,14 @@ export interface PaymentEvent {
   debtors: Debtor[]
 }
 
+export interface PaymentEventsPage {
+  events: PaymentEvent[]
+  page: number
+  per_page: number
+  last_page: number
+  total: number
+}
+
 export interface PaymentEventInput {
   title: string
   memo?: string

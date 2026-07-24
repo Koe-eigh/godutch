@@ -61,15 +61,27 @@ paths:
       summary: グループの支払いイベント一覧取得
       parameters:
         - $ref: '#/components/parameters/GroupId'
+        - name: page
+          in: query
+          description: ページ番号（0以下は1として扱う）
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          description: 1ページあたりの件数（1〜100の範囲に補正する）
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
       responses:
         '200':
-          description: イベント一覧
+          description: event_dateの降順で取得したイベント一覧。最終ページを超えた場合はeventsが空配列
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PaymentEvent'
+                $ref: '#/components/schemas/PaymentEventPage'
     post:
       summary: 支払いイベント追加
       parameters:
@@ -223,6 +235,27 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Debtor'
+    PaymentEventPage:
+      type: object
+      required: [events, page, per_page, last_page, total]
+      properties:
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentEvent'
+        page:
+          type: integer
+          minimum: 1
+        per_page:
+          type: integer
+          minimum: 1
+          maximum: 100
+        last_page:
+          type: integer
+          minimum: 1
+        total:
+          type: integer
+          minimum: 0
     Creditor:
       type: object
       required: [memberId, amount]
