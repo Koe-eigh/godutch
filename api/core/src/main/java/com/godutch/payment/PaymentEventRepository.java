@@ -35,6 +35,10 @@ public interface PaymentEventRepository {
 
     Optional<List<PaymentEvent>> findAllBy(GroupId groupId);
 
+    Optional<List<PaymentEvent>> findAllBy(GroupId groupId, int page, int perPage);
+
+    long countBy(GroupId groupId);
+
     /**
      * グループ内の支払いイベントで立て替えられた金額の合計を取得します。
      */

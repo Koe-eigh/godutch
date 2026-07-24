@@ -6,6 +6,7 @@ import com.godutch.app.payment.api.GetAllPaymentEventsByGroupId;
 import com.godutch.app.payment.api.GetPaymentEventById;
 import com.godutch.app.payment.api.UpdatePaymentEvent;
 import com.godutch.web.payment.dto.PaymentEventRequest;
+import com.godutch.web.payment.dto.PaymentEventPageResponse;
 import com.godutch.web.payment.dto.PaymentEventResponse;
 
 import jakarta.validation.Valid;
@@ -38,8 +39,11 @@ public class PaymentEventController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PaymentEventResponse>> list(@PathVariable String groupId) {
-        var input = new GetAllPaymentsByGroupIdHttpRequestHandler(groupId);
+    public ResponseEntity<PaymentEventPageResponse> list(
+            @PathVariable String groupId,
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "per_page", defaultValue = "10") int perPage) {
+        var input = new GetAllPaymentsByGroupIdHttpRequestHandler(groupId, page, perPage);
         var output = new GetAllPaymentsByGroupIdHttpResponsePresenter();
         getAllPaymentEventsByGroupId.execute(input, output);
         return output.present();

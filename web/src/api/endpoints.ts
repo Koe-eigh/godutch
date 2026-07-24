@@ -4,6 +4,7 @@ import type {
   GroupInput,
   PaymentEvent,
   PaymentEventInput,
+  PaymentEventsPage,
   Settlement,
 } from './types'
 
@@ -17,38 +18,43 @@ export async function getGroup(groupId: string, signal?: AbortSignal): Promise<G
 }
 
 // /groups/{groupId}/events
-export async function listEvents(groupId: string): Promise<PaymentEvent[]> {
-  return http.get<PaymentEvent[]>(`/groups/${encodeURIComponent(groupId)}/events`)
+export async function listEvents(
+  groupId: string,
+  page = 1,
+  perPage = 10,
+  signal?: AbortSignal
+): Promise<PaymentEventsPage> {
+  return http.get<PaymentEventsPage>(`/groups/${encodeURIComponent(groupId)}/events`, {
+    query: { page, per_page: perPage },
+    signal,
+  })
 }
 
-export async function addEvent(
-  groupId: string,
-  body: PaymentEventInput,
-): Promise<PaymentEvent> {
+export async function addEvent(groupId: string, body: PaymentEventInput): Promise<PaymentEvent> {
   return http.post<PaymentEvent>(`/groups/${encodeURIComponent(groupId)}/events`, body)
 }
 
 // /groups/{groupId}/events/{eventId}
 export async function getEvent(groupId: string, eventId: string): Promise<PaymentEvent> {
   return http.get<PaymentEvent>(
-    `/groups/${encodeURIComponent(groupId)}/events/${encodeURIComponent(eventId)}`,
+    `/groups/${encodeURIComponent(groupId)}/events/${encodeURIComponent(eventId)}`
   )
 }
 
 export async function updateEvent(
   groupId: string,
   eventId: string,
-  body: PaymentEventInput,
+  body: PaymentEventInput
 ): Promise<PaymentEvent> {
   return http.put<PaymentEvent>(
     `/groups/${encodeURIComponent(groupId)}/events/${encodeURIComponent(eventId)}`,
-    body,
+    body
   )
 }
 
 export async function deleteEvent(groupId: string, eventId: string): Promise<void> {
   await http.delete<unknown>(
-    `/groups/${encodeURIComponent(groupId)}/events/${encodeURIComponent(eventId)}`,
+    `/groups/${encodeURIComponent(groupId)}/events/${encodeURIComponent(eventId)}`
   )
 }
 

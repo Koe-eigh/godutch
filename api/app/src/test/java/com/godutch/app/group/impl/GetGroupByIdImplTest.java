@@ -119,6 +119,16 @@ class GetGroupByIdImplTest {
         }
 
         @Override
+        public Optional<List<PaymentEvent>> findAllBy(GroupId groupId, int page, int perPage) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public long countBy(GroupId groupId) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public void deleteById(PaymentEventId id) {
             throw new UnsupportedOperationException();
         }

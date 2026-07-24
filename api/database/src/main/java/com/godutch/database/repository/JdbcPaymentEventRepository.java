@@ -140,18 +140,40 @@ public class JdbcPaymentEventRepository implements PaymentEventRepository {
 
     @Override
     public Optional<List<PaymentEvent>> findAllBy(GroupId groupId) {
-        try (Connection conn = dataSource.getConnection()) {
-            String sql = """
-                        SELECT id, group_id, title, memo
-                        FROM tbl_payment_events
-                        WHERE group_id = ?;
-                        """;
+        String sql = """
+            SELECT id, group_id, title, memo
+            FROM tbl_payment_events
+            WHERE group_id = ?
+            ORDER BY event_date DESC, id DESC
+            """;
+        return findAllBy(groupId, sql, null, null);
+    }
 
+    @Override
+    public Optional<List<PaymentEvent>> findAllBy(GroupId groupId, int page, int perPage) {
+        String sql = """
+            SELECT id, group_id, title, memo
+            FROM tbl_payment_events
+            WHERE group_id = ?
+            ORDER BY event_date DESC, id DESC
+            LIMIT ? OFFSET ?
+            """;
+        long offset = (long) (page - 1) * perPage;
+        return findAllBy(groupId, sql, perPage, offset);
+    }
+
+    private Optional<List<PaymentEvent>> findAllBy(
+            GroupId groupId, String sql, Integer limit, Long offset) {
+        try (Connection conn = dataSource.getConnection()) {
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.setString(1, groupId.toString());
+                if (limit != null && offset != null) {
+                    ps.setInt(2, limit);
+                    ps.setLong(3, offset);
+                }
                 try (ResultSet rs = ps.executeQuery()) {
-                    Map<PaymentEventId, PaymentEvent> eventMap = new HashMap<>();
-                    
+                    Map<PaymentEventId, PaymentEvent> eventMap = new LinkedHashMap<>();
+
                     while (rs.next()) {
                         PaymentEventId eventId = new PaymentEventId(rs.getString("id"));
                         GroupId gId = new GroupId(rs.getString("group_id"));
@@ -159,13 +181,13 @@ public class JdbcPaymentEventRepository implements PaymentEventRepository {
                         String memo = rs.getString("memo");
 
                         PaymentEvent event = eventMap.computeIfAbsent(eventId, id -> new PaymentEvent(id, gId, title, memo));
-                        
+
                         String creditSql = """
                                             SELECT member_id, amount
                                             FROM tbl_payment_event_creditors
                                             WHERE event_id = ?;
                                             """;
-                        
+
                         try (PreparedStatement creditPs = conn.prepareStatement(creditSql)) {
                             creditPs.setString(1, eventId.toString());
 
@@ -199,6 +221,24 @@ public class JdbcPaymentEventRepository implements PaymentEventRepository {
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public long countBy(GroupId groupId) {
+        String sql = """
+            SELECT COUNT(*) AS event_count
+            FROM tbl_payment_events
+            WHERE group_id = ?
+            """;
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, groupId.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getLong("event_count") : 0L;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to count payment events", e);
         }
     }
 

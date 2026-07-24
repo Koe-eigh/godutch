@@ -18,10 +18,10 @@ public class GetAllPaymentEventsByGroupIdImpl implements GetAllPaymentEventsByGr
     @Override
     public void execute(GetAllPaymentEventsByGroupIdInputPort input, GetAllPaymentEventsByGroupIdOutputPort output) {
         var groupId = input.groupId();
-        paymentEventRepository.findAllBy(groupId)
-            .ifPresentOrElse(
-                paymentEvents -> output.result(paymentEvents),
-                () -> output.result(List.of()) // Return an empty list if no events found
-            );
+        var paymentEvents = paymentEventRepository
+            .findAllBy(groupId, input.page(), input.perPage())
+            .orElse(List.of());
+        var total = paymentEventRepository.countBy(groupId);
+        output.result(paymentEvents, input.page(), input.perPage(), total);
     }
 }
