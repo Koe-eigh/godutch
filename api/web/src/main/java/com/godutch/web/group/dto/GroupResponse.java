@@ -42,10 +42,12 @@ public class GroupResponse {
     public static class MemberResponse {
         private final String id;
         private final String name;
+        private final String totalUsedAmount;
 
-        public MemberResponse(String id, String name) {
+        public MemberResponse(String id, String name, String totalUsedAmount) {
             this.id = id;
             this.name = name;
+            this.totalUsedAmount = totalUsedAmount;
         }
 
         public String getId() {
@@ -54,6 +56,10 @@ public class GroupResponse {
 
         public String getName() {
             return name;
+        }
+
+        public String getTotalUsedAmount() {
+            return totalUsedAmount;
         }
     }
 }

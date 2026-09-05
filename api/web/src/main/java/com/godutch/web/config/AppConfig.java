@@ -2,6 +2,7 @@ package com.godutch.web.config;
 
 import com.godutch.app.group.api.CreateGroup;
 import com.godutch.app.group.api.GetGroupById;
+import com.godutch.app.group.api.GetGroupPaymentSummary;
 import com.godutch.app.group.impl.CreateGroupImpl;
 import com.godutch.app.group.impl.GetGroupByIdImpl;
 import com.godutch.app.payment.api.AddPaymentEvent;
@@ -22,6 +23,7 @@ import com.godutch.payment.PaymentEventService;
 import com.godutch.payment.PaymentEventServiceSimpleImpl;
 import com.godutch.database.repository.JdbcGroupRepository;
 import com.godutch.database.repository.JdbcPaymentEventRepository;
+import com.godutch.database.query.JdbcGetGroupPaymentSummary;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -46,10 +48,13 @@ public class AppConfig {
     }
 
     @Bean
-    public GetGroupById getGroupById(
-            GroupRepository groupRepository,
-            PaymentEventRepository paymentEventRepository) {
-        return new GetGroupByIdImpl(groupRepository, paymentEventRepository);
+    public GetGroupById getGroupById(GroupRepository groupRepository) {
+        return new GetGroupByIdImpl(groupRepository);
+    }
+
+    @Bean
+    public GetGroupPaymentSummary getGroupPaymentSummary(DataSource dataSource) {
+        return new JdbcGetGroupPaymentSummary(dataSource);
     }
 
     @Bean

@@ -3,6 +3,7 @@
 export interface Member {
   id: string
   name: string
+  totalUsedAmount: string
 }
 
 export interface MemberInput {

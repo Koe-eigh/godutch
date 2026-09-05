@@ -88,4 +88,5 @@ class JdbcPaymentEventRepositoryTest {
         assertEquals(11L, total);
         verify(statement).setString(1, GROUP_ID);
     }
+
 }

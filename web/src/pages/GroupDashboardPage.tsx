@@ -79,7 +79,8 @@ export default function GroupDashboardPage() {
           <ul className={styles.list}>
             {group.members.map((member) => (
               <li key={member.id} className={styles.listItem}>
-                {member.name}
+                <span className={styles.name}>{member.name}</span>
+                <span className={styles.amount}>{formatAmount(member.totalUsedAmount)}円</span>
               </li>
             ))}
           </ul>

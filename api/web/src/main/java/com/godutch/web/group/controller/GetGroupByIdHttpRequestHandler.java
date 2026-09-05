@@ -1,9 +1,11 @@
 package com.godutch.web.group.controller;
 
 import com.godutch.app.group.api.GetGroupByIdInputPort;
+import com.godutch.app.group.api.GetGroupPaymentSummaryInputPort;
 import com.godutch.group.GroupId;
 
-public class GetGroupByIdHttpRequestHandler implements GetGroupByIdInputPort {
+public class GetGroupByIdHttpRequestHandler
+        implements GetGroupByIdInputPort, GetGroupPaymentSummaryInputPort {
     private final GroupId groupId;
     public GetGroupByIdHttpRequestHandler(String groupId) {
         this.groupId = new GroupId(groupId);

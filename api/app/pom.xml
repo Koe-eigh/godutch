@@ -31,13 +31,6 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
         
-        <!-- Database module for repositories -->
-        <dependency>
-            <groupId>com.godutch</groupId>
-            <artifactId>database</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
         <!-- テスト関連の依存関係 -->
         <!-- JUnit Jupiter for testing -->
         <dependency>

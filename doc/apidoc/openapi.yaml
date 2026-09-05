@@ -187,6 +187,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Member'
+        totalPaidAmount:
+          type: string
     Member:
       type: object
       properties:
@@ -194,6 +196,8 @@ components:
           type: string
           format: uuid
         name:
+          type: string
+        totalUsedAmount:
           type: string
     PaymentEvent:
       type: object

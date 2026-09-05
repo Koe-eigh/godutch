@@ -3,19 +3,29 @@ package com.godutch.web.group.controller;
 import org.springframework.http.ResponseEntity;
 
 import com.godutch.app.group.api.GetGroupByIdOutputPort;
+import com.godutch.app.group.api.GetGroupPaymentSummaryOutputPort;
 import com.godutch.common.Amount;
 import com.godutch.group.Group;
+import com.godutch.group.MemberId;
 import com.godutch.web.group.dto.GroupResponse;
+import java.util.Map;
 
-public class GetGroupByIdHttpResponsePresenter implements GetGroupByIdOutputPort {
+public class GetGroupByIdHttpResponsePresenter
+        implements GetGroupByIdOutputPort, GetGroupPaymentSummaryOutputPort {
 
     private Group group;
     private Amount totalPaidAmount;
+    private Map<MemberId, Amount> totalUsedAmounts;
 
     @Override
-    public void result(Group group, Amount totalPaidAmount) {
+    public void result(Group group) {
         this.group = group;
+    }
+
+    @Override
+    public void result(Amount totalPaidAmount, Map<MemberId, Amount> totalUsedAmounts) {
         this.totalPaidAmount = totalPaidAmount;
+        this.totalUsedAmounts = totalUsedAmounts;
     }
 
     @Override
@@ -33,7 +43,11 @@ public class GetGroupByIdHttpResponsePresenter implements GetGroupByIdOutputPort
             group.getName(),
             group.getDescription(),
             group.getMembers().stream()
-                .map(member -> new GroupResponse.MemberResponse(member.getId(), member.getName()))
+                .map(member -> new GroupResponse.MemberResponse(
+                    member.getId(),
+                    member.getName(),
+                    totalUsedAmounts.getOrDefault(new MemberId(member.getId()), Amount.ZERO).toString()
+                ))
                 .toList(),
             totalPaidAmount.toString()
         );
