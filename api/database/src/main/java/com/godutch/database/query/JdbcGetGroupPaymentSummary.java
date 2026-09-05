@@ -27,61 +27,58 @@ public class JdbcGetGroupPaymentSummary implements GetGroupPaymentSummary {
     public void execute(
             GetGroupPaymentSummaryInputPort input,
             GetGroupPaymentSummaryOutputPort output) {
-        String totalPaidSql = """
-            SELECT COALESCE(SUM(creditor.amount), 0) AS total_paid_amount
-            FROM tbl_payment_events payment_event
-            INNER JOIN tbl_payment_event_creditors creditor
-                ON creditor.event_id = payment_event.id
-            WHERE payment_event.group_id = ?
-            """;
-        String totalUsedSql = """
-            SELECT debtor.member_id, SUM(debtor.amount) AS total_used_amount
-            FROM tbl_payment_events payment_event
-            INNER JOIN tbl_payment_event_debtors debtor
-                ON debtor.event_id = payment_event.id
-            WHERE payment_event.group_id = ?
-            GROUP BY debtor.member_id
+        String sql = """
+            SELECT paid.total_paid_amount, used.member_id, used.total_used_amount
+            FROM (
+                SELECT COALESCE(SUM(creditor.amount), 0) AS total_paid_amount
+                FROM tbl_payment_events payment_event
+                INNER JOIN tbl_payment_event_creditors creditor
+                    ON creditor.event_id = payment_event.id
+                WHERE payment_event.group_id = ?
+            ) paid
+            LEFT JOIN (
+                SELECT debtor.member_id, SUM(debtor.amount) AS total_used_amount
+                FROM tbl_payment_events payment_event
+                INNER JOIN tbl_payment_event_debtors debtor
+                    ON debtor.event_id = payment_event.id
+                WHERE payment_event.group_id = ?
+                GROUP BY debtor.member_id
+            ) used ON TRUE
             """;
 
         try (Connection connection = dataSource.getConnection()) {
-            Amount totalPaidAmount = findTotalPaidAmount(connection, totalPaidSql, input);
-            Map<MemberId, Amount> totalUsedAmounts =
-                findTotalUsedAmounts(connection, totalUsedSql, input);
-            output.result(totalPaidAmount, totalUsedAmounts);
+            findPaymentSummary(connection, sql, input, output);
         } catch (SQLException cause) {
             output.failure(new RuntimeException("Failed to get group payment summary", cause));
         }
     }
 
-    private Amount findTotalPaidAmount(
+    private void findPaymentSummary(
             Connection connection,
             String sql,
-            GetGroupPaymentSummaryInputPort input) throws SQLException {
+            GetGroupPaymentSummaryInputPort input,
+            GetGroupPaymentSummaryOutputPort output) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, input.groupId().toString());
+            statement.setString(2, input.groupId().toString());
             try (ResultSet results = statement.executeQuery()) {
-                return results.next()
-                    ? new Amount(results.getLong("total_paid_amount"))
-                    : Amount.ZERO;
-            }
-        }
-    }
-
-    private Map<MemberId, Amount> findTotalUsedAmounts(
-            Connection connection,
-            String sql,
-            GetGroupPaymentSummaryInputPort input) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, input.groupId().toString());
-            try (ResultSet results = statement.executeQuery()) {
+                Amount totalPaidAmount = Amount.ZERO;
                 Map<MemberId, Amount> totalUsedAmounts = new HashMap<>();
-                while (results.next()) {
-                    totalUsedAmounts.put(
-                        new MemberId(results.getString("member_id")),
-                        new Amount(results.getLong("total_used_amount"))
-                    );
+
+                if (results.next()) {
+                    totalPaidAmount = new Amount(results.getLong("total_paid_amount"));
+                    do {
+                        String memberId = results.getString("member_id");
+                        if (memberId != null) {
+                            totalUsedAmounts.put(
+                                new MemberId(memberId),
+                                new Amount(results.getLong("total_used_amount"))
+                            );
+                        }
+                    } while (results.next());
                 }
-                return totalUsedAmounts;
+
+                output.result(totalPaidAmount, totalUsedAmounts);
             }
         }
     }

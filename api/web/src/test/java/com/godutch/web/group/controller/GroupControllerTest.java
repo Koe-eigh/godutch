@@ -1,6 +1,8 @@
 package com.godutch.web.group.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -46,6 +48,27 @@ class GroupControllerTest {
         assertTrue(getSummary.executed);
         assertEquals("7500", response.getBody().getTotalPaidAmount());
         assertEquals("7500", response.getBody().getMembers().get(0).getTotalUsedAmount());
+    }
+
+    @Test
+    void propagatesPaymentSummaryFailure() {
+        RuntimeException failure = new RuntimeException(
+            "Failed to get group payment summary",
+            new java.sql.SQLException("database unavailable")
+        );
+        GroupController controller = new GroupController(
+            (input, output) -> { },
+            (input, output) -> output.result(null),
+            (input, output) -> output.failure(failure)
+        );
+
+        RuntimeException thrown = assertThrows(
+            RuntimeException.class,
+            () -> controller.get("123e4567-e89b-12d3-a456-426614174000")
+        );
+
+        assertSame(failure, thrown);
+        assertSame(failure.getCause(), thrown.getCause());
     }
 
     private static class StubGetGroupById implements GetGroupById {

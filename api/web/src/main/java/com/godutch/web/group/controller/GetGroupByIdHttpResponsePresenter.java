@@ -16,6 +16,7 @@ public class GetGroupByIdHttpResponsePresenter
     private Group group;
     private Amount totalPaidAmount;
     private Map<MemberId, Amount> totalUsedAmounts;
+    private RuntimeException failure;
 
     @Override
     public void result(Group group) {
@@ -30,10 +31,14 @@ public class GetGroupByIdHttpResponsePresenter
 
     @Override
     public void failure(RuntimeException cause) {
-        return;
+        this.failure = cause;
     }
 
     public ResponseEntity<GroupResponse> present() {
+        if (failure != null) {
+            throw failure;
+        }
+
         if (group == null) {
             return ResponseEntity.notFound().build();
         }

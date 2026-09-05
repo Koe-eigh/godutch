@@ -1,6 +1,8 @@
 package com.godutch.web.group.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 import java.util.Map;
@@ -43,5 +45,18 @@ class GetGroupByIdHttpResponsePresenterTest {
         assertEquals("12345", response.getTotalPaidAmount());
         assertEquals("7500", response.getMembers().get(0).getTotalUsedAmount());
         assertEquals("0", response.getMembers().get(1).getTotalUsedAmount());
+    }
+
+    @Test
+    void rethrowsPaymentSummaryFailure() {
+        GetGroupByIdHttpResponsePresenter presenter = new GetGroupByIdHttpResponsePresenter();
+        RuntimeException failure = new RuntimeException(
+            "Failed to get group payment summary",
+            new java.sql.SQLException("database unavailable")
+        );
+
+        presenter.failure(failure);
+
+        assertSame(failure, assertThrows(RuntimeException.class, presenter::present));
     }
 }
