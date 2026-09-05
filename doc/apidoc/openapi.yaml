@@ -176,7 +176,7 @@ components:
     Group:
       type: object
       properties:
-        groupId:
+        id:
           type: string
           format: uuid
         name:
@@ -192,7 +192,7 @@ components:
     Member:
       type: object
       properties:
-        memberId:
+        id:
           type: string
           format: uuid
         name:

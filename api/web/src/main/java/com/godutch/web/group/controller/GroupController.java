@@ -41,7 +41,9 @@ public class GroupController {
         GetGroupByIdHttpRequestHandler input = new GetGroupByIdHttpRequestHandler(groupId);
         GetGroupByIdHttpResponsePresenter output = new GetGroupByIdHttpResponsePresenter();
         getGroupById.execute(input, output);
-        getGroupPaymentSummary.execute(input, output);
+        if (output.canGetPaymentSummary()) {
+            getGroupPaymentSummary.execute(input, output);
+        }
         return output.present();
     }
 }

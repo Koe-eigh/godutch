@@ -1,6 +1,7 @@
 package com.godutch.web.group.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -56,9 +57,15 @@ class GroupControllerTest {
             "Failed to get group payment summary",
             new java.sql.SQLException("database unavailable")
         );
+        Group group = new Group(
+            new GroupId("123e4567-e89b-12d3-a456-426614174000"),
+            "旅行",
+            "",
+            List.of()
+        );
         GroupController controller = new GroupController(
             (input, output) -> { },
-            (input, output) -> output.result(null),
+            (input, output) -> output.result(group),
             (input, output) -> output.failure(failure)
         );
 
@@ -69,6 +76,42 @@ class GroupControllerTest {
 
         assertSame(failure, thrown);
         assertSame(failure.getCause(), thrown.getCause());
+    }
+
+    @Test
+    void skipsPaymentSummaryWhenGroupIsNotFound() {
+        StubGetGroupPaymentSummary getSummary =
+            new StubGetGroupPaymentSummary(Amount.ZERO, Map.of());
+        GroupController controller = new GroupController(
+            (input, output) -> { },
+            (input, output) -> output.result(null),
+            getSummary
+        );
+
+        var response = controller.get("123e4567-e89b-12d3-a456-426614174000");
+
+        assertEquals(404, response.getStatusCode().value());
+        assertFalse(getSummary.executed);
+    }
+
+    @Test
+    void skipsPaymentSummaryWhenGroupQueryFails() {
+        RuntimeException failure = new RuntimeException("Failed to get group");
+        StubGetGroupPaymentSummary getSummary =
+            new StubGetGroupPaymentSummary(Amount.ZERO, Map.of());
+        GroupController controller = new GroupController(
+            (input, output) -> { },
+            (input, output) -> output.failure(failure),
+            getSummary
+        );
+
+        RuntimeException thrown = assertThrows(
+            RuntimeException.class,
+            () -> controller.get("123e4567-e89b-12d3-a456-426614174000")
+        );
+
+        assertSame(failure, thrown);
+        assertFalse(getSummary.executed);
     }
 
     private static class StubGetGroupById implements GetGroupById {

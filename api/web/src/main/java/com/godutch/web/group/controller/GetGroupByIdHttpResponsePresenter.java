@@ -14,8 +14,8 @@ public class GetGroupByIdHttpResponsePresenter
         implements GetGroupByIdOutputPort, GetGroupPaymentSummaryOutputPort {
 
     private Group group;
-    private Amount totalPaidAmount;
-    private Map<MemberId, Amount> totalUsedAmounts;
+    private Amount totalPaidAmount = Amount.ZERO;
+    private Map<MemberId, Amount> totalUsedAmounts = Map.of();
     private RuntimeException failure;
 
     @Override
@@ -25,13 +25,17 @@ public class GetGroupByIdHttpResponsePresenter
 
     @Override
     public void result(Amount totalPaidAmount, Map<MemberId, Amount> totalUsedAmounts) {
-        this.totalPaidAmount = totalPaidAmount;
-        this.totalUsedAmounts = totalUsedAmounts;
+        this.totalPaidAmount = totalPaidAmount == null ? Amount.ZERO : totalPaidAmount;
+        this.totalUsedAmounts = totalUsedAmounts == null ? Map.of() : totalUsedAmounts;
     }
 
     @Override
     public void failure(RuntimeException cause) {
         this.failure = cause;
+    }
+
+    boolean canGetPaymentSummary() {
+        return group != null && failure == null;
     }
 
     public ResponseEntity<GroupResponse> present() {

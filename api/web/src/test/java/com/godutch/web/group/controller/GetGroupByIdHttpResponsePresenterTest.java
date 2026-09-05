@@ -59,4 +59,24 @@ class GetGroupByIdHttpResponsePresenterTest {
 
         assertSame(failure, assertThrows(RuntimeException.class, presenter::present));
     }
+
+    @Test
+    void presentsZeroTotalsWhenPaymentSummaryIsNotProvided() {
+        Group group = new Group(
+            new GroupId("123e4567-e89b-12d3-a456-426614174000"),
+            "旅行",
+            "",
+            List.of(new Member(
+                new MemberId("123e4567-e89b-12d3-a456-426614174001"),
+                "田中"
+            ))
+        );
+        GetGroupByIdHttpResponsePresenter presenter = new GetGroupByIdHttpResponsePresenter();
+
+        presenter.result(group);
+
+        var response = presenter.present().getBody();
+        assertEquals("0", response.getTotalPaidAmount());
+        assertEquals("0", response.getMembers().get(0).getTotalUsedAmount());
+    }
 }
