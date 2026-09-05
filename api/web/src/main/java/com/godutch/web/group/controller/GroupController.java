@@ -2,6 +2,7 @@ package com.godutch.web.group.controller;
 
 import com.godutch.app.group.api.CreateGroup;
 import com.godutch.app.group.api.GetGroupById;
+import com.godutch.app.group.api.GetGroupPaymentSummary;
 import com.godutch.web.group.dto.CreateGroupRequest;
 import com.godutch.web.group.dto.GroupResponse;
 
@@ -15,13 +16,16 @@ import org.springframework.web.bind.annotation.*;
 public class GroupController {
     private final CreateGroup createGroup;
     private final GetGroupById getGroupById;
+    private final GetGroupPaymentSummary getGroupPaymentSummary;
 
     public GroupController(
         CreateGroup createGroup,
-        GetGroupById getGroupById
+        GetGroupById getGroupById,
+        GetGroupPaymentSummary getGroupPaymentSummary
     ) {
         this.createGroup = createGroup;
         this.getGroupById = getGroupById;
+        this.getGroupPaymentSummary = getGroupPaymentSummary;
     }
 
     @PostMapping
@@ -37,6 +41,9 @@ public class GroupController {
         GetGroupByIdHttpRequestHandler input = new GetGroupByIdHttpRequestHandler(groupId);
         GetGroupByIdHttpResponsePresenter output = new GetGroupByIdHttpResponsePresenter();
         getGroupById.execute(input, output);
+        if (output.canGetPaymentSummary()) {
+            getGroupPaymentSummary.execute(input, output);
+        }
         return output.present();
     }
 }

@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import com.godutch.app.payment.api.GetAllPaymentEventsByGroupIdInputPort;
 import com.godutch.app.payment.api.GetAllPaymentEventsByGroupIdOutputPort;
-import com.godutch.common.Amount;
 import com.godutch.group.GroupId;
 import com.godutch.payment.PaymentEvent;
 import com.godutch.payment.PaymentEventId;
@@ -124,11 +123,6 @@ class GetAllPaymentEventsByGroupIdImplTest {
 
         @Override
         public Optional<List<PaymentEvent>> findAllBy(GroupId groupId) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Amount findTotalPaidAmountBy(GroupId groupId) {
             throw new UnsupportedOperationException();
         }
 

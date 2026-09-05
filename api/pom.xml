@@ -17,8 +17,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>core</module>
-        <module>database</module>
         <module>app</module>
+        <module>database</module>
         <module>web</module>
     </modules>
 
